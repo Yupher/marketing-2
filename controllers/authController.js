@@ -249,3 +249,61 @@ exports.checkVendorSub = catchAsync(async (req, res, next) => {
   }
   next();
 });
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  // 1) Get user from collection
+  const userData = await UserModel.findById(req.user._id).select("+password");
+
+  if (!userData) {
+    return next(new AppError("User Not Found!.", 404));
+  }
+
+  // 2) Check if POSTed current password is correct
+  if (
+    !(await userData.correctPassword(
+      req.body.currentPassword,
+      userData.password
+    ))
+  ) {
+    return next(new AppError("Your current password is wrong.", 401));
+  }
+
+  // 3) If so, update password
+  userData.password = req.body.password;
+  userData.passwordConfirm = req.body.passwordConfirm;
+  await userData.save();
+  // User.findByIdAndUpdate will NOT work as intended!
+
+  // 4) Log user in, send JWT
+  createSendToken(userData, 200, req, res);
+});
+
+exports.updateVendorPassword = catchAsync(async (req, res, next) => {
+  // 1) Get user from collection
+  const vendorData = await vendorModel
+    .findById(req.user._id)
+    .select("+password");
+
+  if (!vendorData) {
+    return next(new AppError("User Not Found!.", 404));
+  }
+
+  // 2) Check if POSTed current password is correct
+  if (
+    !(await vendorData.correctPassword(
+      req.body.currentPassword,
+      vendorData.password
+    ))
+  ) {
+    return next(new AppError("Your current password is wrong.", 401));
+  }
+
+  // 3) If so, update password
+  vendorData.password = req.body.password;
+  vendorData.passwordConfirm = req.body.passwordConfirm;
+  await vendorData.save();
+  // User.findByIdAndUpdate will NOT work as intended!
+
+  // 4) Log user in, send JWT
+  createSendToken(vendorData, 200, req, res);
+});

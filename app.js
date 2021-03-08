@@ -32,7 +32,7 @@ app.use("/api/v1/user", userRoute);
 
 app.all("*", (req, res, next) => {
   console.log(req);
-  next(new appError(`Can't find 15 ${req.originalUrl} on this server!`, 404));
+  next(new appError(`Can't find  ${req.originalUrl} on this server!`, 404));
 });
 
 app.use(globalErrorHandler);

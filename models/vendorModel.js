@@ -61,9 +61,8 @@ vendorSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, 12);
 
   // Delete passwordConfirm field
-  if (process.env.NODE_ENV !== "development") {
-    this.passwordConfirm = undefined;
-  }
+  this.passwordConfirm = undefined;
+
   next();
 });
 
