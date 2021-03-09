@@ -39,8 +39,21 @@ exports.getVendorOrders = catchAsync(async (req, res, next) => {
   }
 
   return res.status(200).json({
-    success: true,
+    status: "success",
     results: orderData.length,
-    orderData,
+    data: orderData,
+  });
+});
+
+exports.getVendorOrderById = catchAsync(async (req, res, next) => {
+  const orderData = await orderModel.findById(req.params.id);
+  //check if order exist in data base
+  if (!orderData) {
+    return next(new AppError("You do not have any orders", 404));
+  }
+
+  return res.status(200).json({
+    status: "success",
+    data: orderData,
   });
 });

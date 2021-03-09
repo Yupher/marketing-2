@@ -1,8 +1,4 @@
 const mongoose = require("mongoose");
-const AppError = require("../utils/appError");
-const productModel = require("./productModel");
-const UserModel = require("./userModel");
-const vendorModel = require("./vendorModel");
 
 const reviewSchema = new mongoose.Schema({
   review: {

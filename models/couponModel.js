@@ -35,13 +35,7 @@ const couponSchema = new mongoose.Schema({
   },
 });
 
-/* couponSchema.index({ product: 1, user: 1 }, { unique: true }); */
-
 couponSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: "product",
-  });
-
   this.populate({
     path: "user",
   });

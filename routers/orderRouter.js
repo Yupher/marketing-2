@@ -36,7 +36,7 @@ router
     authController.protect,
     authController.restrictTo("vendor"),
     authController.permitedTo(orderModel, { addedBy: true }),
-    orderController.getVendorOrders
+    orderController.getVendorOrderById
   );
 
 // This route is exclusif to admins

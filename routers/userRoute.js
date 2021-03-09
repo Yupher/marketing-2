@@ -24,11 +24,13 @@ router
   .route("/updatepassword")
   .patch(authController.protect, authController.updatePassword);
 
-router.route("/vendor").get(
-  authController.protect,
-  authController.restrictTo("admin")
-  //userController.getAllVendors
-);
+router
+  .route("/vendor")
+  .get(
+    authController.protect,
+    authController.restrictTo("admin"),
+    userController.getAllVendors
+  );
 
 //Update vendor informations
 router

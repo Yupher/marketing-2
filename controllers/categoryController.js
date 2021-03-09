@@ -21,19 +21,25 @@ exports.categoryOrders = catchAsync(async (req, res, next) => {
     return next(new AppError("No category was found", 404));
   }
   let allOrders = await orderModel.find();
-  let cartOrders = [];
+  let catOrders = [];
   allOrders.forEach((order) => {
     let { product } = order;
 
     product.categories.forEach((category) => {
       if (category._id.toString() === req.params.id) {
-        cartOrders.push(order);
+        catOrders.push(order);
       }
     });
   });
+  catOrders = catOrders.reverse();
+
+  if (req.query && req.query.limit) {
+    catOrders = catOrders.slice(0, req.query.limit);
+  }
   return res.status(200).json({
-    success: true,
-    data: cartOrders,
+    status: "success",
+    results: catOrders.length,
+    data: catOrders,
   });
 });
 
@@ -51,8 +57,16 @@ exports.categoryProducts = catchAsync(async (req, res, next) => {
       }
     });
   });
+
+  catProduct = catProduct.reverse();
+
+  if (req.query && req.query.limit) {
+    catProduct = catProduct.slice(0, req.query.limit);
+  }
+
   return res.status(200).json({
-    success: true,
+    status: "success",
+    results: catProduct.length,
     data: catProduct,
   });
 });

@@ -43,8 +43,8 @@ exports.getVendorCoupon = catchAsync(async (req, res, next) => {
   }
 
   return res.status(200).json({
-    success: true,
+    status: "success",
     results: couponData.length,
-    couponData,
+    data: couponData,
   });
 });

@@ -9,8 +9,6 @@ const vendorModel = require("../models/vendorModel");
 
 exports.getAll = (Model, params) =>
   catchAsync(async (req, res, next) => {
-    console.log(req.query);
-
     if (req.query && req.query.inCart) {
       if (
         req.user.role !== "admin" &&
@@ -202,6 +200,5 @@ exports.deleteOne = (Model, params) =>
 
     res.status(204).json({
       status: "success",
-      data: null,
     });
   });

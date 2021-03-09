@@ -62,8 +62,8 @@ exports.requestSubscription = catchAsync(async (req, res, next) => {
   let newSubRequest = await subscriptionModel.findOne({ vendor: req.user._id });
 
   return res.status(200).json({
-    success: true,
-    result: newSubRequest,
+    status: "success",
+    data: newSubRequest,
   });
 });
 
@@ -125,8 +125,8 @@ exports.subsRequestProcessing = catchAsync(async (req, res, next) => {
   let updatedSubs = await subscriptionModel.findById(req.params.id);
 
   return res.status(200).json({
-    success: true,
-    result: updatedSubs,
+    status: "success",
+    data: updatedSubs,
   });
 });
 
@@ -157,5 +157,5 @@ exports.abortSubscription = catchAsync(async (req, res, next) => {
   );
   let updatedSubs = await subscriptionModel.findOne({ vendor: req.user._id });
 
-  return res.status(200).json({ success: true, result: updatedSubs });
+  return res.status(200).json({ status: "success", data: updatedSubs });
 });

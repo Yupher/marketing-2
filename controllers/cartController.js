@@ -7,7 +7,6 @@ const factory = require("./handleFactory");
 const productModel = require("../models/productModel");
 const orderModel = require("../models/orderModel");
 const User = require("../models/userModel");
-const vendor = require("../models/vendorModel");
 
 // cart will be created automatically when user signup these three following controllers are for developers
 exports.getAllCarts = factory.getAll(cartModel);
@@ -49,8 +48,8 @@ exports.addItem = catchAsync(async (req, res, next) => {
   let newCartData = await cartModel.findOne({ user: req.user._id });
 
   res.status(200).json({
-    success: true,
-    result: newCartData,
+    status: "success",
+    data: newCartData,
   });
 });
 
@@ -87,8 +86,8 @@ exports.deleteItem = catchAsync(async (req, res, next) => {
   cartData = await cartModel.findOne({ user: req.user._id });
 
   return res.status(200).json({
-    success: true,
-    document: cartData,
+    status: "success",
+    data: cartData,
   });
 });
 
@@ -103,7 +102,7 @@ exports.DeleteAllItems = catchAsync(async (req, res, next) => {
   cartData.products.splice(index, 1);
   await cartData.save();
   return res.status(200).json({
-    success: true,
+    status: "success",
   });
 });
 
@@ -151,8 +150,8 @@ exports.moveToWishList = catchAsync(async (req, res, next) => {
     { new: true }
   );
   return res.status(200).json({
-    success: true,
-    document: cartData,
+    status: "success",
+    data: cartData,
   });
 });
 

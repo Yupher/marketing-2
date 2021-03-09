@@ -1,5 +1,4 @@
 const productModel = require("../models/productModel");
-const reviewModel = require("../models/reviewModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const factory = require("./handleFactory");
@@ -57,7 +56,7 @@ exports.AddDiscount = catchAsync(async (req, res, next) => {
   let newDoc = await productModel.findById(req.params.id);
 
   return res.status(200).json({
-    success: true,
-    discount: newDoc,
+    status: "success",
+    data: newDoc,
   });
 });

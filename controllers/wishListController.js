@@ -24,10 +24,10 @@ exports.addItem = catchAsync(async (req, res, next) => {
   wishListData.products.push({ product: req.params.id });
   console.log(wishListData.products);
   await wishListData.save();
-
+  let data = await wishListModel.findOne({ user: req.user._id });
   res.status(200).json({
-    success: true,
-    wishListData,
+    status: "success",
+    data,
   });
 });
 
@@ -59,8 +59,8 @@ exports.deleteItem = catchAsync(async (req, res, next) => {
     { new: true }
   );
   return res.status(200).json({
-    success: true,
-    document: wishListData,
+    status: "success",
+    data: wishListData,
   });
 });
 
@@ -76,8 +76,8 @@ exports.deleteAllItems = catchAsync(async (req, res, next) => {
   wishListData.products = [];
   await wishListData.save();
   return res.status(200).json({
-    success: true,
-    wishListData,
+    status: "success",
+    data: wishListData,
   });
 });
 
@@ -114,9 +114,10 @@ exports.addToCart = catchAsync(async (req, res, next) => {
     );
   }
   let myData = await cartData.save();
+  let data = await wishListModel.findOne({ user: req.user._id });
 
   return res.status(200).json({
-    success: true,
-    data: myData,
+    status: "success",
+    data,
   });
 });

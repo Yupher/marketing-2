@@ -45,9 +45,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: "success",
-    data: {
-      user: updatedUser,
-    },
+    data: updatedUser,
   });
 });
 
@@ -81,8 +79,6 @@ exports.updateVendor = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: "success",
-    data: {
-      user: updatedVendor,
-    },
+    data: updatedVendor,
   });
 });

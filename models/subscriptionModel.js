@@ -1,6 +1,4 @@
 const mongoose = require("mongoose");
-const AppError = require("../utils/appError");
-const userModel = require("./userModel");
 
 const subscriptionSchema = new mongoose.Schema({
   createdAt: {
