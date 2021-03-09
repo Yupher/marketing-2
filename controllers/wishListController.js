@@ -104,7 +104,7 @@ exports.addToCart = catchAsync(async (req, res, next) => {
     //check if selected element is the same element in the wishlist
     if (elm.product._id.toString() === req.params.id) {
       bool = true;
-      cartData.products.push(elm.product._id);
+      cartData.products.push({ product: elm.product._id });
     }
   });
 

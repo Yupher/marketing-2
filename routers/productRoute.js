@@ -12,13 +12,12 @@ router
   .get(
     authController.protect,
     authController.restrictTo("admin"),
-    productController.calculeRatings,
     productController.getAllProducts
   );
 
 router
   .route("/")
-  .get(productController.calculeRatings, productController.getAllProductsActive)
+  .get(productController.getAllProductsActive)
   .post(
     authController.protect,
     authController.restrictTo("vendor"),
@@ -38,7 +37,7 @@ router
 
 router
   .route("/:id")
-  .get(productController.calculeRatings, productController.getProduct)
+  .get(productController.getProduct)
   .patch(
     authController.protect,
     authController.restrictTo("vendor"),

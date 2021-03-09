@@ -14,7 +14,8 @@ router
   .delete(
     authController.protect,
     authController.permitedTo(reviewModel),
-    reviewController.deleteReview
+    reviewController.deleteReview,
+    reviewController.calculateRatings
   );
 
 //individual Review
@@ -24,18 +25,21 @@ router
   .post(
     authController.protect,
     authController.restrictTo("client", "admin"),
-    reviewController.createReview
+    reviewController.createReview,
+    reviewController.calculateRatings
   )
   .patch(
     authController.protect,
     authController.restrictTo("client", "admin"),
     authController.permitedTo(reviewModel),
-    reviewController.updateReview
+    reviewController.updateReview,
+    reviewController.calculateRatings
   )
   .delete(
     authController.protect,
     authController.restrictTo("admin"),
-    reviewController.deleteReview
+    reviewController.deleteReview,
+    reviewController.calculateRatings
   );
 
 module.exports = router;

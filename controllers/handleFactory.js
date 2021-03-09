@@ -9,6 +9,20 @@ const vendorModel = require("../models/vendorModel");
 
 exports.getAll = (Model, params) =>
   catchAsync(async (req, res, next) => {
+    console.log(req.query);
+
+    if (req.query && req.query.inCart) {
+      if (
+        req.user.role !== "admin" &&
+        Array.isArray(req.user.cartBuy) &&
+        !req.user.cartBuy.includes(req.query.inCart)
+      ) {
+        return next(
+          new AppError("You do not have permission to perform this action", 403)
+        );
+      }
+    }
+
     let filter = {};
     const features = new APIFeatures(Model.find(filter), req.query)
       .filter()
@@ -68,13 +82,25 @@ exports.createOne = (Model, params) =>
       req.body.tags &&
       req.body.tags.length > 3
     ) {
-      req.body.tags = req.body.tags.splice(4);
+      req.body.tags = req.body.tags.slice(0, 3);
       warning = "Max tags is 3";
     }
+
     if (params && params.checkCategory) {
-      let categoryData = await categoryModel.findById(req.body.categories);
-      if (!req.body.categories || !categoryData) {
-        return next(new AppError("A product must have a Category", 404));
+      if (!req.body.categories) {
+        return next(new AppError("A product must have a Category.", 404));
+      }
+
+      for (let i = 0; i < req.body.categories.length; i++) {
+        let categoryData = await categoryModel.findById(req.body.categories[i]);
+        if (!categoryData) {
+          return next(
+            new AppError(
+              `We can't find a category with this id ${req.body.categories[i]}`,
+              404
+            )
+          );
+        }
       }
     }
 
@@ -87,8 +113,19 @@ exports.createOne = (Model, params) =>
     //add review to product
     if (params && params.addReviewToProduct) {
       let productData = await productModel.findById(req.params.id);
+
+      if (!productData) {
+        return next(new AppError("Product not found.", 404));
+      }
       productData.reviews.push(doc._id);
       await productData.save();
+    }
+
+    //update reviews and send response from the route
+    if (params && params.isMiddleware) {
+      req.body.review = doc;
+      req.body.product = doc.product;
+      return next();
     }
     res.status(201).json({
       status: "success",
@@ -124,7 +161,7 @@ exports.getOne = (Model, params, popOptions) =>
   });
 
 //Update try
-exports.updateOne = (Model) =>
+exports.updateOne = (Model, params) =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -134,6 +171,12 @@ exports.updateOne = (Model) =>
       return next(new AppError("No document found with that ID", 404));
     }
 
+    //update reviews and send response from the route
+    if (params && params.isMiddleware) {
+      req.body.review = doc;
+      req.body.product = doc.product;
+      return next();
+    }
     res.status(200).json({
       status: "success",
       data: {
@@ -143,12 +186,18 @@ exports.updateOne = (Model) =>
   });
 
 //Delete try
-exports.deleteOne = (Model) =>
+exports.deleteOne = (Model, params) =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.findByIdAndDelete(req.params.id);
-
     if (!doc) {
       return next(new AppError("No document found with that ID", 404));
+    }
+
+    //update reviews and send response from the route
+    if (params && params.isMiddleware) {
+      // body add id product
+      req.body.product = doc.product;
+      return next();
     }
 
     res.status(204).json({

@@ -123,12 +123,12 @@ exports.moveToWishList = catchAsync(async (req, res, next) => {
     //pushin items to wishlist
     if (elm.product._id.toString() === req.params.id) {
       bool = true;
-      movedProduct.push(elm.product._id);
+      movedProduct.push({ product: elm.product._id });
     }
   });
   cartData.products.forEach((elm) => {
     if (elm.product._id.toString() !== req.params.id) {
-      notmovedProduct.push(elm.product._id);
+      notmovedProduct.push({ product: elm.product_id });
     }
   });
   if (!bool) {
@@ -138,9 +138,11 @@ exports.moveToWishList = catchAsync(async (req, res, next) => {
   }
 
   // finding wishlist document in data base and updating with the new items
-  let wishListData = await wishListModel.findOneAndUpdate(
+  let wishListData = await wishListModel.findOne({ user: req.user._id });
+
+  await wishListModel.findOneAndUpdate(
     { user: req.user._id },
-    { products: [...movedProduct] },
+    { products: [...wishListData.products, ...movedProduct] },
     { new: true }
   );
   cartData = await cartModel.findOneAndUpdate(
@@ -265,5 +267,5 @@ exports.purchaseAll = catchAsync(async (req, res, next) => {
   cartData.products = [];
   await cartData.save();
 
-  return res.status(200).json({ success: true, data: null });
+  return res.status(200).json({ status: "success", data: carteData });
 });
